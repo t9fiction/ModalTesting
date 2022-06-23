@@ -3,7 +3,8 @@ import { ethers } from "ethers";
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from "../contract/contract";
 import WalletConnectProvider from "@walletconnect/ethereum-provider";
 import Web3Modal from 'web3modal'
-import WalletConnect from '@walletconnect/web3-provider'
+// import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
+// import WalletConnect from '@walletconnect/web3-provider'
 import Web3 from "web3";
 const { ethereum } = window;
 
@@ -201,7 +202,7 @@ export const loadModalConnect = createAsyncThunk("loadModalConnect", async (_, t
   try {
     //  Create WalletConnect Provider
     const web3Modal = new Web3Modal({
-      network: "rinkeby",
+      network: "mainnet",
       providerOptions: {
         walletconnect: {
           display: {
@@ -211,13 +212,14 @@ export const loadModalConnect = createAsyncThunk("loadModalConnect", async (_, t
           options: {
             infuraId: "17342b0f3f344d2d96c2c89c5fddc959" // required
           }
-        },
-        walletlink: {
-          // package: CoinbaseWalletSDK,
-          // options: {
-          // appName: APP_NAME,
-          infuraId: "17342b0f3f344d2d96c2c89c5fddc959" // required
-        },
+        }
+        // walletlink: {
+        //   package: CoinbaseWalletSDK,
+        //   options: {
+        //     appName: APP_NAME,
+        //     infuraId: "17342b0f3f344d2d96c2c89c5fddc959" // required
+        //   }
+        // }
       }
     });
 
