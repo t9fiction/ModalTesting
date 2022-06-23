@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loadBlockChain, switchNetwork, loadWalletConnect, updateAccount } from "../../functions/allFunctions";
+import { loadBlockChain, switchNetwork, loadWalletConnect, loadModalConnect, updateAccount, updateChain } from "../../functions/allFunctions";
 
 
 
@@ -44,6 +44,13 @@ const web3ConnectSlice = createSlice({
         [loadWalletConnect.fulfilled.toString()]: (
             state, { payload }
         ) => {
+            state.web3 = payload?.web3;
+            state.contract = payload?.contract;
+            state.accounts = payload?.accounts;
+        },
+        [loadModalConnect.fulfilled.toString()]: (
+            state, { payload }
+        ) => {
             console.log("payload web3: ", state.web3)
             console.log("payload contract: ", state.contract)
             console.log("payload accounts: ", state.accounts)
@@ -60,6 +67,12 @@ const web3ConnectSlice = createSlice({
         ) => {
             state.accounts = payload?.accounts;
 
+        },
+        [updateChain.fulfilled.toString()]: (
+            state,
+            { payload }
+        ) => {
+            state.web3 = payload?.web3;
         }
     }
 })

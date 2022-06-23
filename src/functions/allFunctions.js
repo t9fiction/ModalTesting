@@ -2,6 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from "../contract/contract";
 import WalletConnectProvider from "@walletconnect/ethereum-provider";
+import Web3Modal from 'web3modal'
+import WalletConnect from '@walletconnect/web3-provider'
 import Web3 from "web3";
 const { ethereum } = window;
 
@@ -126,10 +128,105 @@ export const loadWalletConnect = createAsyncThunk("loadWalletConnect", async (_,
     console.log(provider, "Provider")
 
     if (provider) {
-    await provider.enable();
+      await provider.enable();
 
-    //  Create Web3
+      //  Create Web3
+      const web3 = new Web3(provider);
+
+      const contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
+      const accounts = await web3.eth.getAccounts();
+      return {
+        web3,
+        accounts,
+        contract
+      }
+    } else {
+      return {
+        web3LoadingErrorMessage: "Error in connecting Wallet"
+      }
+    }
+  } catch (error) {
+    console.log(error, "error")
+    alert("Error in catch")
+  }
+})
+
+// ----------------------------------- Update Account----------------------------------------
+export const updateAccount = createAsyncThunk("updateAccount", async (data, thunkAPI) => {
+  try {
+    let accounts = data
+    return {
+      accounts,
+    }
+  }
+
+  catch (error) {
+    console.log("error", error)
+  }
+})
+
+// ----------------------------------- Update Chain----------------------------------------
+export const updateChain = createAsyncThunk("updateChain", async (data, thunkAPI) => {
+  try {
+    console.log("data", data)
+    let web3 = data
+    return {
+      web3,
+    }
+  }
+
+  catch (error) {
+    console.log("error", error)
+  }
+})
+
+// ----------------------------------- Disconnect ----------------------------------------
+
+// ==> Not working, also not yet added in reducer
+export const loadDisconnect = createAsyncThunk("loadDisconnect", async (data, thunkAPI) => {
+  try {
+    console.log("data", data)
+    let provider = data
+
+    await provider.disconnect();
+  }
+
+  catch (error) {
+    console.log("error", error)
+  }
+})
+
+// --------------------------------- web3 Modal -----------------------------------------------------
+export const loadModalConnect = createAsyncThunk("loadModalConnect", async (_, thunkAPI) => {
+  try {
+    //  Create WalletConnect Provider
+    const web3Modal = new Web3Modal({
+      network: "rinkeby",
+      providerOptions: {
+        walletconnect: {
+          display: {
+            name: "Mobile"
+          },
+          package: WalletConnectProvider,
+          options: {
+            infuraId: "17342b0f3f344d2d96c2c89c5fddc959" // required
+          }
+        },
+        walletlink: {
+          // package: CoinbaseWalletSDK,
+          // options: {
+          // appName: APP_NAME,
+          infuraId: "17342b0f3f344d2d96c2c89c5fddc959" // required
+        },
+      }
+    });
+
+    const provider = await web3Modal.connect();
     const web3 = new Web3(provider);
+
+    console.log(provider, "Provider")
+
+    // await provider.enable();
 
     const contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
     const accounts = await web3.eth.getAccounts();
@@ -138,27 +235,12 @@ export const loadWalletConnect = createAsyncThunk("loadWalletConnect", async (_,
       accounts,
       contract
     }
-    } else {
     return {
       web3LoadingErrorMessage: "Error in connecting Wallet"
-    }
     }
   } catch (error) {
     console.log(error, "error")
     alert("Error in catch")
   }
 })
-
-
-export const updateAccount = createAsyncThunk("updateAccount", async (data, thunkAPI) => {
-  try {
-      let accounts =  data
-          return {
-              accounts,
-          }
-      }
-  
-  catch (error) {
-      console.log("error", error)
-  }
-})
+// --------------------------------- web3 Modal -----------------------------------------------------
