@@ -22,9 +22,9 @@ function App() {
     dispatch(loadModalConnect())
   }
 
-  const web3Disconnect = (data) => {
-    dispatch(loadDisconnect(data))
-  }
+  // const web3Disconnect = (data) => {
+  //   dispatch(loadDisconnect(data))
+  // }
 
 
   // account switch
@@ -35,6 +35,12 @@ function App() {
   // Chain switch
   window.ethereum.on('chainChanged', async (data) => {
     dispatch(updateChain(data))
+  })
+
+  // disconnect
+  window.ethereum.on("disconnect", (code, reason) => {
+    // dispatch(updateChain(data))
+    console.log(code, reason);
   })
 
   return (
@@ -54,7 +60,7 @@ function App() {
       <button onClick={() => web3ModalConnect()}>
         Modal
       </button>
-      <button onClick={() => web3Disconnect()}>
+      <button onClick={() => web3.disconnect()}>
         DC
       </button>
       <br />
